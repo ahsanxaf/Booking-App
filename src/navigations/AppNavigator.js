@@ -11,6 +11,7 @@ import BookingScreen from "../screens/BookingScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SavedScreen from "../screens/SavedScreen";
 import SearchScreen from "../screens/SearchScreen";
+import PlacesScreen from "../screens/PlacesScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -85,6 +86,7 @@ const AppNavigator = () => {
         <Stack.Navigator>
             <Stack.Screen name="Main" component={BottomTabs} options={{headerShown:false}}/>
             <Stack.Screen name="Search" component={SearchScreen} options={{headerShown:false}}/>
+            <Stack.Screen name="Places" component={PlacesScreen} options={{headerShown:false}}/>
         </Stack.Navigator>
     </NavigationContainer>
   )

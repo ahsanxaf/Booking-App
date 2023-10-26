@@ -6,7 +6,8 @@ import {
   Pressable,
   TextInput,
   Button,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import React, {useLayoutEffect, useState} from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -61,6 +62,34 @@ const HomeScreen = () => {
   };
 
   console.log(route.params)
+
+  const searchPlaces = (place) => {
+    if(!route.params || !selectedDates){
+      Alert.alert(
+        "Invalid Details",
+        "Please enter all the details",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+
+    }
+    if(route?.params && selectedDates){
+      navigation.navigate('Places', {
+        rooms: rooms,
+        adults: adults,
+        children: children,
+        selectedDates: selectedDates,
+        place: place
+      })
+    }
+  }
 
   return (
     <>
@@ -124,7 +153,7 @@ const HomeScreen = () => {
             </Pressable>
 
             {/* search button */}
-            <Pressable style={styles.buttonStyle}>
+            <Pressable style={styles.buttonStyle} onPress={() => searchPlaces(route?.params.input)}>
               <Text style={{textAlign: 'center', color: 'white', fontSize: 15, fontWeight: '500'}}>Search</Text>
             </Pressable>
           </View>
