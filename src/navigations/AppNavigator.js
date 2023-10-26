@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen";
 import BookingScreen from "../screens/BookingScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SavedScreen from "../screens/SavedScreen";
+import SearchScreen from "../screens/SearchScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -83,6 +84,7 @@ const AppNavigator = () => {
     <NavigationContainer>
         <Stack.Navigator>
             <Stack.Screen name="Main" component={BottomTabs} options={{headerShown:false}}/>
+            <Stack.Screen name="Search" component={SearchScreen} options={{headerShown:false}}/>
         </Stack.Navigator>
     </NavigationContainer>
   )
