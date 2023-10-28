@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
 import React from 'react'
 import { Dimensions } from 'react-native'
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native'
 
 const PropertyCart = ({
     rooms,
@@ -13,10 +14,22 @@ const PropertyCart = ({
 
         const {width, height} = Dimensions.get('window');
         console.log('Image:',property.image)
+        const navigation = useNavigation();
 
   return (
     <View>
-        <Pressable style={styles.outerPressable}>
+        <Pressable style={styles.outerPressable} onPress={() => navigation.navigate('Info', {
+            name: property.name,
+            rating: property.rating,
+            oldPrice: property.oldPrice,
+            newPrice: property.newPrice,
+            photos: property.photos,
+            rooms: property.rooms,
+            adults: adults,
+            children: children,
+            rooms: rooms,
+            selectedDates: selectedDates
+        })}>
             <View>
                 <Image style={{height: height/3.45, width: width-280}} source={{uri: property.image}}/>
             </View>

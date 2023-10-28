@@ -1,13 +1,16 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, {useLayoutEffect} from 'react'
+import React, {useLayoutEffect, useState} from 'react'
 import { useRoute, useNavigation } from '@react-navigation/native'
-import { Octicons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import PropertyCart from '../components/PropertyCart';
+import { Octicons, Ionicons, FontAwesome5, FontAwesome, Entypo } from '@expo/vector-icons';
+import PropertyCart from '../components/PropertyCard';
+import { BottomModal, ModalFooter, ModalTitle, SlideAnimation, ModalContent } from 'react-native-modals';
 
 const PlacesScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
     console.log(route.params)
+    const [modalVisibile, setModalVisibile] = useState(false);
+    const [selectedFilter, setSelectedFilter] = useState([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -488,13 +491,65 @@ const PlacesScreen = () => {
             },
           ],
         },
-      ];
+    ];
+
+    const filters = [
+        {
+            id: "0",
+            filter: "cost:Low to High",
+        },
+        {
+            id: "1",
+            filter: "cost:High to Low",
+        },
+    ];
+    
+    const [sortedData, setSortedData] = useState(data);
+    
+    const compare = (a, b) => {
+        if(a.newPrice > b.newPrice){
+          return -1;
+        }
+        if(a.newPrice < b.newPrice){
+          return 1;
+        }
+        return 0;
+
+    }
+    
+    const comparison = (a, b) => {
+        if(a.newPrice < b.newPrice){
+          return -1;
+        }
+        if(a.newPrice > b.newPrice){
+          return 1;
+        }
+        return 0;
+
+    }
     
     // console.log('Image:',route.params.rooms)
+    const searchPlaces = data?.filter((item) => item.place === route.params.place);
+    // console.log(searchPlaces)
+    const applyFilter = (filter) => {
+        setModalVisibile(false);
+        switch(filter){
+            case 'cost:High to Low':
+                searchPlaces.map((val) => val.properties.sort(compare));
+                setSortedData(searchPlaces);
+                break;
+            
+            case 'cost:Low to High':
+                searchPlaces.map((val) => val.properties.sort(comparison));
+                setSortedData(searchPlaces);
+                break;
+
+        }
+    }
   return (
     <View>
         <Pressable style={styles.outerPressable}>
-            <Pressable style={styles.iconButtons}>
+            <Pressable style={styles.iconButtons} onPress={() => setModalVisibile(!modalVisibile)}>
                 <Octicons name="arrow-switch" size={22} color="gray" />
                 <Text style={styles.iconButtonsText}>Sort</Text>
             </Pressable>
@@ -504,14 +559,16 @@ const PlacesScreen = () => {
                 <Text style={styles.iconButtonsText}>Filter</Text>
             </Pressable>
 
-            <Pressable style={styles.iconButtons}>
+            <Pressable style={styles.iconButtons} onPress={() => navigation.navigate('Map', {
+                searchResults: searchPlaces
+            })}>
                 <FontAwesome5 name="map-marker-alt" size={22} color="gray" />
                 <Text style={styles.iconButtonsText}>Map</Text>
             </Pressable>
         </Pressable>
 
         <ScrollView style={{backgroundColor: '#F5F5F5'}}>
-            {data?.filter((item) => item.place === route.params.place)
+            {sortedData?.filter((item) => item.place === route.params.place)
             .map((item) => item.properties.map((property, index) => (
                 <PropertyCart 
                     key={index}
@@ -524,6 +581,58 @@ const PlacesScreen = () => {
                 />
             )))}
         </ScrollView>
+
+        <BottomModal 
+            swipeThreshold={200}
+            onBackdropPress={() => setModalVisibile(!modalVisibile)}
+            swipeDirection={["up", "down"]}
+            footer={
+                <ModalFooter>
+                    <Pressable style={styles.modalFooterButton} onPress={() => applyFilter(selectedFilter)}>
+                        <Text>Apply</Text>
+                    </Pressable>
+                </ModalFooter>
+            }
+            modalTitle={<ModalTitle title="Sort and Filter" />}
+            modalAnimation={
+              new SlideAnimation({
+                slideFrom: "bottom",
+              })
+            }
+            onHardwareBackPress={() => setModalVisibile(!modalVisibile)}
+            visible={modalVisibile}
+            onTouchOutside={() => setModalVisibile(!modalVisibile)}
+        >
+            <ModalContent style={{ width: "100%", height: 280 }}>
+                <View style={{ flexDirection: "row" }}>
+                    <View
+                        style={{
+                            marginVertical: 10,
+                            flex: 2,
+                            height: 280,
+                            borderRightWidth: 1,
+                            borderColor: "#E0E0E0",
+                        }}
+                    >
+                        <Text style={{ textAlign: "center" }}>Sort </Text>
+                    </View>
+
+                    <View style={{flex: 3, margin: 10}}>
+                        {filters.map((item, index) => (
+                            <Pressable key={index} style={styles.filtersPressable} onPress={() => setSelectedFilter(item.filter)}>
+                                {selectedFilter.includes(item.filter) ? (
+                                    <FontAwesome name="circle" size={18} color="green" />
+                                ) : (
+                                    <Entypo name="circle" size={18} color="black" />
+                                )}
+                                
+                                <Text style={{ fontSize: 16, fontWeight: "500", marginLeft: 6 }}>{item.filter}</Text>
+                            </Pressable>
+                        ))}
+                    </View>
+                </View>
+            </ModalContent>
+        </BottomModal>
     </View>
   )
 }
@@ -544,5 +653,17 @@ const styles = StyleSheet.create({
     },
     iconButtonsText: {
         fontSize: 15, fontWeight: "500", marginLeft: 8
-    }
+    },
+    modalFooterButton: {
+        paddingRight: 10,
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginVertical: 10,
+        marginBottom:30
+    },
+    filtersPressable: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginVertical: 10,
+    },
 })
