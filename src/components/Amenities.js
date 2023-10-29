@@ -45,7 +45,7 @@ const Amenities = () => {
             style={{
               margin: 10,
               backgroundColor: "#007FFF",
-              paddingHorizontal: 11,
+              paddingHorizontal: 10,
               paddingVertical: 5,
               borderRadius: 25,
             }}
