@@ -12,9 +12,9 @@ const PropertyCart = ({
     selectedDates,
     availableRooms}) => {
 
-        const {width, height} = Dimensions.get('window');
-        console.log('Image:',property.image)
-        const navigation = useNavigation();
+    const {width, height} = Dimensions.get('window');
+    // console.log('Image:',property.image)
+    const navigation = useNavigation();
 
   return (
     <View>

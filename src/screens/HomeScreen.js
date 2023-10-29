@@ -20,7 +20,7 @@ import { BottomModal, ModalButton, ModalContent, ModalFooter, ModalTitle, SlideA
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [selectedDates, setSelectedDates] = useState();
-  console.log(selectedDates)
+  // console.log(selectedDates)
   const [rooms, setRooms] = useState(1);
   const [adults, setadults] = useState(2);
   const [children, setChildren] = useState(0);
